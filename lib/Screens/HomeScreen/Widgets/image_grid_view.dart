@@ -12,20 +12,31 @@ class ImageGridView extends StatefulWidget {
 }
 
 class _ImageGridViewState extends State<ImageGridView> {
+  final ScrollController _scrollController = ScrollController();
   List<ImageDetail> imgList = [];
   int page = 1;
+  bool loading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _mockRequest();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent &&
+          !loading) {
+        print("new data call with page number $page");
+        _mockRequest();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GridView.builder(
+        controller: _scrollController,
         itemBuilder: (ctx, i) {
           return Card(
               elevation: 5,
@@ -41,12 +52,20 @@ class _ImageGridViewState extends State<ImageGridView> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   _mockRequest() async {
+    loading = true;
     var api = "https://api.unsplash.com/photos?page=$page";
     var response = await http.get(
       Uri.parse(api),
       headers: {
-        "Authorization": 'Client-ID D2HfNoC0ACA72Kc80UCDZCGSDRL_Rqyuv5eN56dlW-o',
+        "Authorization":
+            'Client-ID D2HfNoC0ACA72Kc80UCDZCGSDRL_Rqyuv5eN56dlW-o',
       },
     );
 
@@ -68,5 +87,6 @@ class _ImageGridViewState extends State<ImageGridView> {
 
     setState(() {});
     page++;
+    loading = false;
   }
 }
