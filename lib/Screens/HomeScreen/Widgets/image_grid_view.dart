@@ -34,16 +34,19 @@ class _ImageGridViewState extends State<ImageGridView> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return loading? Container(child: const Center(child: CircularProgressIndicator(),)): Expanded(
       child: GridView.builder(
         controller: _scrollController,
         itemBuilder: (ctx, i) {
-          return Card(
-              elevation: 5,
-              child: Image.network(
-                imgList[i].thumb!,
-                fit: BoxFit.cover,
-              ));
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  imgList[i].thumb!,
+                  fit: BoxFit.cover,
+                )),
+          );
         },
         itemCount: imgList.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
