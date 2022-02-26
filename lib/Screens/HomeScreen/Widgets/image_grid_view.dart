@@ -36,13 +36,11 @@ class _ImageGridViewState extends State<ImageGridView> {
   Widget build(BuildContext context) {
     var s = MediaQuery.of(context).size;
 
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
+    return Expanded(
       child: Stack(
         children: [
           Container(),
-          loading && page==1
+          loading && page == 1
               ? Container(
                   child: const Center(
                   child: CircularProgressIndicator(),
@@ -70,7 +68,7 @@ class _ImageGridViewState extends State<ImageGridView> {
                             mainAxisSpacing: 4.0),
                   ),
                 ),
-          loading && page!=1
+          loading && page != 1
               ? Positioned(
                   bottom: 0,
                   child: Container(
