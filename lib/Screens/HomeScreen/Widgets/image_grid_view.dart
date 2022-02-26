@@ -36,7 +36,9 @@ class _ImageGridViewState extends State<ImageGridView> {
   Widget build(BuildContext context) {
     var s = MediaQuery.of(context).size;
 
-    return Expanded(
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
       child: Stack(
         children: [
           Container(),
