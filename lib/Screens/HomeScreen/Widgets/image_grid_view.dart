@@ -131,6 +131,7 @@ class _ImageGridViewState extends State<ImageGridView> {
 
     loading = false;
     setState(() {});
+    // incrimenting page number
     page++;
     
   }
