@@ -35,19 +35,43 @@ class _ImageGridViewState extends State<ImageGridView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GridView.builder(
-        controller: _scrollController,
-        itemBuilder: (ctx, i) {
-          return Card(
-              elevation: 5,
-              child: Image.network(
-                imgList[i].thumb!,
-                fit: BoxFit.cover,
-              ));
-        },
-        itemCount: imgList.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, crossAxisSpacing: 4.0, mainAxisSpacing: 4.0),
+      child: Stack(
+        children: [
+          loading && page ==1
+          ? const Center(
+            child: CircularProgressIndicator(),
+          )
+          : Container(
+            
+            child: GridView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemBuilder: (ctx, i) {
+                return Card(
+                    elevation: 5,
+                    child: Image.network(
+                      imgList[i].thumb!,
+                      fit: BoxFit.cover,
+                    ));
+              },
+              itemCount: imgList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0),
+            ),
+          ),
+
+          loading && page !=1 ? Positioned(
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 75,
+              child: const Center(child: CircularProgressIndicator(),),))
+              : Container()
+          // loading? Flexible(flex: 2, child: Container(child: Center(child: CircularProgressIndicator(),),)): Container()
+          
+        ],
       ),
     );
   }
@@ -60,6 +84,9 @@ class _ImageGridViewState extends State<ImageGridView> {
 
   _mockRequest() async {
     loading = true;
+    setState(() {
+      
+    });
     var api = "https://api.unsplash.com/photos?page=$page";
     var response = await http.get(
       Uri.parse(api),
@@ -85,8 +112,9 @@ class _ImageGridViewState extends State<ImageGridView> {
       print("Something went wrong");
     }
 
+    loading = false;
     setState(() {});
     page++;
-    loading = false;
+    
   }
 }
