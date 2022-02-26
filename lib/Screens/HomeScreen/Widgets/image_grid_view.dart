@@ -22,11 +22,14 @@ class _ImageGridViewState extends State<ImageGridView> {
     // TODO: implement initState
     super.initState();
     _mockRequest();
+
+    //Adding listeners for scroll events
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent &&
           !loading) {
         print("new data call with page number $page");
+        // requesting api call whenever list reaches its end
         _mockRequest();
       }
     });
@@ -37,11 +40,14 @@ class _ImageGridViewState extends State<ImageGridView> {
     return Expanded(
       child: Stack(
         children: [
+          // Will show progress indicator if api call request is not complete
           loading && page ==1
           ? const Center(
             child: CircularProgressIndicator(),
           )
-          : Padding(
+          : 
+          // photos grid view
+          Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: GridView.builder(
               shrinkWrap: true,
@@ -58,6 +64,7 @@ class _ImageGridViewState extends State<ImageGridView> {
                   ),
                 );
               },
+
               itemCount: imgList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -66,6 +73,7 @@ class _ImageGridViewState extends State<ImageGridView> {
             ),
           ),
 
+          // Will show progress indicator at bottom when list reaches its end
           loading && page !=1 ? Positioned(
             bottom: 0,
             child: Container(
@@ -73,24 +81,28 @@ class _ImageGridViewState extends State<ImageGridView> {
               height: 75,
               child: const Center(child: CircularProgressIndicator(),),))
               : Container()
-          // loading? Flexible(flex: 2, child: Container(child: Center(child: CircularProgressIndicator(),),)): Container()
           
         ],
       ),
     );
   }
 
+  // method for disposing scroll controller
   @override
   void dispose() {
     super.dispose();
     _scrollController.dispose();
   }
 
+
+  // function for doing api calls
   _mockRequest() async {
     loading = true;
     setState(() {
       
     });
+
+    // api link
     var api = "https://api.unsplash.com/photos?page=$page";
     var response = await http.get(
       Uri.parse(api),
@@ -108,6 +120,7 @@ class _ImageGridViewState extends State<ImageGridView> {
         var img = element["urls"]["regular"];
         var blurHash = element["blur_hash"];
 
+        // modeling json into ImageDetail object
         ImageDetail imgDetail = ImageDetail(id, blurHash, img, thumb);
 
         imgList.add(imgDetail);
